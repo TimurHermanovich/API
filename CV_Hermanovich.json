@@ -1,0 +1,19 @@
+{
+  "name": "Timur",
+  "lastname": "Hermanovich",
+  "age": 25,
+  "gender": "male",
+  "marital status": "single",
+  "phonenumber": "375292718964",
+  "height": 188,
+  "weight": 95,
+  "size": 52,
+  "address": {
+    "city": "Minsk",
+    "zip": "220068",
+    "street": "Osipenko Street"
+  },
+  "righthended": true,
+  "hobbies": "basketball",
+  "job": "Bank Specialist"
+}
