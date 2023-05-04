@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "5029321d-c0f2-42fa-8319-081e6352de32",
+		"name": "HomeworkMegaplan (light)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25854745"
+	},
+	"item": [
+		{
+			"name": "api/v3/auth/access_token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var token = jsonData.access_token;\r",
+							"pm.environment.set(\"access_token\", \"Bearer \" + token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/auth/access_token",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"auth",
+						"access_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v3/offer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var offerId = jsonData.data.id;\r",
+							"pm.environment.set(\"offer_id\", offerId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contentType\": \"Offer\",\r\n    \"name\": \"Товар обыкновенный\",\r\n    \"article\": \"АРТ1\",\r\n    \"price\": {\r\n        \"contentType\": \"Money\",\r\n        \"value\": 100,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"unit\": {\r\n        \"contentType\": \"Unit\",\r\n        \"id\": \"12\"\r\n    },\r\n    \"tax\": {\r\n        \"contentType\": \"Tax\",\r\n        \"id\": \"2\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/offer",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"offer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v3/offer/{{offer_id}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"name, article, value, currency, unit, tax\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.name).to.eql(\"Товар обыкновенный\");\r",
+							"    pm.expect(jsonData.data.article).to.eql(\"АРТ1\");\r",
+							"    pm.expect(jsonData.data.price.value).to.eql(100);\r",
+							"    pm.expect(jsonData.data.price.currency).to.eql(\"USD\");\r",
+							"    pm.expect(jsonData.data.unit.name).to.eql(\"кг\");\r",
+							"    pm.expect(jsonData.data.tax.name).to.eql(\"10 %\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/offer/{{offer_id}}",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"offer",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v3/offer/{{offer_id}} (Edit)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should offer eddited\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.name).to.eql(\"Товар необыкновенный\");\r",
+							"    pm.expect(jsonData.data.price.value).to.eql(1000);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contentType\": \"Offer\",\r\n    \"name\": \"Товар необыкновенный\",\r\n    \"article\": \"APT1\",\r\n    \"price\": {\r\n        \"contentType\": \"Money\",\r\n        \"value\": 1000,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"unit\": {\r\n        \"contentType\": \"Unit\",\r\n        \"id\": \"12\"\r\n    },\r\n    \"tax\": {\r\n        \"contentType\": \"Tax\",\r\n        \"id\": \"2\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/offer/{{offer_id}}",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"offer",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v3/offer/{{offer_id}} (Delete)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/offer/{{offer_id}}",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"offer",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v3/offer/{{offer_id}} (Check)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"should offer body deleted\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.meta.status).to.eql(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contentType\": \"Offer\",\r\n    \"name\": \"Товар обыкновенный\",\r\n    \"article\": \"APT1\",\r\n    \"price\": {\r\n        \"contentType\": \"Money\",\r\n        \"value\": 100,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"unit\": {\r\n        \"contentType\": \"Unit\",\r\n        \"id\": \"12\"\r\n    },\r\n    \"tax\": {\r\n        \"contentType\": \"Tax\",\r\n        \"id\": \"2\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://radio-shop.megaplan.by/api/v3/offer/{{offer_id}}",
+					"protocol": "https",
+					"host": [
+						"radio-shop",
+						"megaplan",
+						"by"
+					],
+					"path": [
+						"api",
+						"v3",
+						"offer",
+						"{{offer_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
